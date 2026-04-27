@@ -4,6 +4,7 @@ Django settings for GridPulse project.
 """
 
 from pathlib import Path
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -61,11 +62,11 @@ WSGI_APPLICATION = 'grid_pulse.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'power_grid',       # Your database name
-        'USER': 'postgres',            # Your PostgreSQL username
-        'PASSWORD': 'ajit',    # Your PostgreSQL password
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 

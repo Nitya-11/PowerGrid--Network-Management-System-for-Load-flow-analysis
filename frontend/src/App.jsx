@@ -308,7 +308,7 @@ export default function GridPulseDashboard() {
               GridPulse — Voltage Monitor
             </div>
             <div style={{ color: subtext, fontSize: 12 }}>
-              Power System Network Management · pandapower output
+              Power System Network Management
             </div>
           </div>
         </div>
@@ -389,7 +389,7 @@ export default function GridPulseDashboard() {
 
           {/* Healthy Buses */}
           <StatCard dark={dark} card={card} border={border} text={text} subtext={subtext}
-            icon="✓" label="HEALTHY BUSES"
+            icon="" label="HEALTHY BUSES"
             value={summary ? summary.healthy_count : "—"}
             sub={`of ${summary?.total_buses || 8} total`} iconColor="#22c55e" />
 
