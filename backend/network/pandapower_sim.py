@@ -110,22 +110,6 @@ def build_network() -> pp.pandapowerNet:
 
 
 def run_simulation(load_data: dict, timestamp=None) -> dict:
-    """
-    Run AC load-flow simulation for one timestep.
-
-    Args:
-        load_data: dict mapping bus_id (int) → {'p_kw': float, 'q_kvar': float}
-                   e.g. {3: {'p_kw': 120, 'q_kvar': 40}, 4: {'p_kw': 90, 'q_kvar': 30}}
-        timestamp: datetime object for time-based voltage variations
-
-    Returns:
-        dict mapping bus_id → {'vm_pu': float, 'status': str}
-        e.g. {0: {'vm_pu': 1.020, 'status': 'NORMAL'}, ...}
-
-    Note:
-        Loads are applied to buses 1-7 (not bus 0 which is the slack bus).
-        p_kw and q_kvar are converted from kW/kVAR → MW/MVAR for pandapower.
-    """
     net = build_network()
 
     # ── Apply loads to buses ───────────────────────────────────────────────────

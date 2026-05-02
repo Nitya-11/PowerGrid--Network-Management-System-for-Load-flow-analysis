@@ -4,6 +4,7 @@ Django settings for GridPulse project.
 """
 
 from pathlib import Path
+import os
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,7 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',       # Django REST Framework
     'corsheaders',          # Allow React frontend to call this backend
-    'network',              # Our main app
+    'network',              
 ]
 
 MIDDLEWARE = [
@@ -62,12 +63,12 @@ WSGI_APPLICATION = 'grid_pulse.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-    }
+         'NAME': os.environ.get('DB_NAME', 'mydb'),
+        'USER': os.environ.get('DB_USER', 'myuser'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'mypassword'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),  
+        'PORT': os.environ.get('DB_PORT', '5432'),
+    } 
 }
 
 # ─── CORS Settings ─────────────────────────────────────────────────────────────

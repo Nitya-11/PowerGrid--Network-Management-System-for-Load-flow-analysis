@@ -1,5 +1,4 @@
 # PowerGrid--Network-Management-System-for-Load-flow-analysis
-# ⚡ GridVision NMS
 ### *Real-time Power Grid Monitoring & Live Voltage Dashboard — from DISCOM to Feeder Level*
 
 [![Made with Django](https://img.shields.io/badge/Django-5.x-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
