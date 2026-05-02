@@ -63,7 +63,7 @@ WSGI_APPLICATION = 'grid_pulse.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-         'NAME': os.environ.get('DB_NAME', 'mydb'),
+         'NAME': os.environ.get('DB_NAME''my_db'),
         'USER': os.environ.get('DB_USER', 'myuser'),
         'PASSWORD': os.environ.get('DB_PASSWORD', 'mypassword'),
         'HOST': os.environ.get('DB_HOST', 'localhost'),  
