@@ -4,3 +4,6 @@ psycopg2-binary
 python-decouple
 django-cors-headers
 gunicorn
+python-dotenv
+pandas
+pandapower 

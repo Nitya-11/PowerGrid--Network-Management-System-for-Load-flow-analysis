@@ -1,5 +1,5 @@
 # Start from official Node image
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /app
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Start React dev server
-CMD ["npm", "start"]
+CMD ["npm", "run","dev"]

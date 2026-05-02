@@ -354,7 +354,7 @@ export default function GridPulseDashboard() {
           justifyContent: "space-between", alignItems: isMobile ? "flex-start" : "center", gap: 16 }}>
           <div style={{ maxWidth: isMobile ? "100%" : 760 }}>
             <div style={{ fontSize: isMobile ? 24 : 30, fontWeight: 800, color: text, lineHeight: 1.05 }}>
-              GridPulse Live Monitoring
+              Voltage Monitoring
             </div>
             <div style={{ marginTop: 10, color: subtext, fontSize: 14, maxWidth: 720, lineHeight: 1.7 }}>
               Track voltage health, smart meter performance and bus stability across the network with a clean, responsive dashboard.

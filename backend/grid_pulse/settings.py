@@ -5,6 +5,9 @@ Django settings for GridPulse project.
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+load_dotenv()
+
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -63,13 +66,14 @@ WSGI_APPLICATION = 'grid_pulse.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-         'NAME': os.environ.get('DB_NAME''my_db'),
-        'USER': os.environ.get('DB_USER', 'myuser'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'mypassword'),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),  
-        'PORT': os.environ.get('DB_PORT', '5432'),
+         'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST','localhost'),  
+        'PORT': os.environ.get('DB_PORT','5432'),
     } 
 }
+# print("DB PASSWORD:", config('DB_PASSWORD'))
 
 # ─── CORS Settings ─────────────────────────────────────────────────────────────
 # Allow React dev server (port 3000 or 5173) to call this backend
