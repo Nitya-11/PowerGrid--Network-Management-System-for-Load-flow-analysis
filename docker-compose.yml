@@ -11,7 +11,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    healthcheck:                          # ✅ YEH ADD KARO
+    healthcheck:                          
       test: ["CMD-SHELL", "pg_isready -U myuser -d mydb"]
       interval: 5s
       timeout: 5s
@@ -34,9 +34,9 @@ services:
       - DB_HOST=db
       - DB_PORT=5432
     depends_on:
-      db:                                 # ✅ CONDITION ADD KARO
+      db:                                 
         condition: service_healthy
-    healthcheck:                          # ✅ YEH ADD KARO
+    healthcheck:                          
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8001/api/buses/')\""]
       interval: 10s
       timeout: 5s
