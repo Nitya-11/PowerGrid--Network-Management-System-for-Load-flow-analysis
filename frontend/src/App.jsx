@@ -216,6 +216,15 @@ export default function GridPulseDashboard() {
   })();
 
   const snapshotTime = simData?.timestamps?.[timeStep] || "12:00";
+  const maxTimeStep = simData?.timestamps?.length ? simData.timestamps.length - 1 : 23;
+
+  useEffect(() => {
+    if (!simData) return;
+    const maxIndex = simData.timestamps.length - 1;
+    if (timeStep > maxIndex) {
+      setTimeStep(maxIndex);
+    }
+  }, [simData, timeStep]);
 
   // ── Derive live KPI summary from the selected snapshot so counts update immediately
   const snapshotSummary = (() => {
@@ -238,6 +247,8 @@ export default function GridPulseDashboard() {
   })();
 
   const currentSummary = snapshotSummary || summary;
+  const warningActive = currentSummary?.warning_count > 0;
+  const criticalActive = currentSummary?.critical_count > 0;
 
   // ── Toggle a bus on/off in the legend ─────────────────────────────────────
   const toggleBus = (bus_id) => {
@@ -417,7 +428,7 @@ export default function GridPulseDashboard() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
             <div style={{ padding: "10px 16px", borderRadius: 999, background: "#dcfce7", color: "#166534", fontWeight: 700, fontSize: 12 }}>
-              {liveMode ? "Live updates enabled" : "Live updates paused"}
+              {liveMode ? "Live refresh every 30s" : "Live refresh paused"}
             </div>
             <div style={{ padding: "10px 16px", borderRadius: 999, background: "#e0f2fe", color: "#075985", fontWeight: 700, fontSize: 12 }}>
               Snapshot @ {snapshotTime}
@@ -452,13 +463,15 @@ export default function GridPulseDashboard() {
              label="WARNINGS"
             value={currentSummary ? currentSummary.warning_count : "—"}
             sub={`${LIMIT_NORMAL_LOW} – ${LIMIT_NORMAL_HIGH} band`}
-            iconColor="#f59e0b" />
+            iconColor="#f59e0b"
+            alertType={warningActive ? "warning" : undefined} />
 
           {/* Critical */}
           <StatCard dark={dark} card={card} border={border} text={text} subtext={subtext}
              label="CRITICAL"
             value={currentSummary ? currentSummary.critical_count : "—"}
-            sub={`outside ±5%`} iconColor="#ef4444" />
+            sub={`outside ±5%`} iconColor="#ef4444"
+            alertType={criticalActive ? "critical" : undefined} />
         </div>
 
         {/* ── Chart Controls ── */}
@@ -619,11 +632,12 @@ export default function GridPulseDashboard() {
             <span style={{ fontSize: 12, color: subtext, minWidth: 40 }}>
               {simData?.timestamps?.[0] || "00:00"}
             </span>
-            <input type="range" min={0} max={23} value={timeStep}
+            <input type="range" min={0} max={maxTimeStep} step={1} value={timeStep}
               onInput={e => setTimeStep(Number(e.target.value))}
+              onChange={e => setTimeStep(Number(e.target.value))}
               style={{ flex: 1, accentColor: "#0ea5e9", cursor: "pointer" }} />
             <span style={{ fontSize: 12, color: subtext, fontFamily: "monospace" }}>
-              t = {timeStep} / 23
+              t = {timeStep} / {maxTimeStep}
             </span>
           </div>
         </div>
@@ -682,9 +696,19 @@ export default function GridPulseDashboard() {
               {snapshotData.map(b => {
                 const busInfo = buses.find(bus => bus.bus_id === b.bus_id);
                 return (
-                  <div key={b.bus_id} style={{ display: "flex", alignItems: "center",
-                    justifyContent: "space-between", padding: "10px 0",
-                    borderBottom: `1px solid ${border}` }}>
+                  <div key={b.bus_id} style={{
+                    display: "flex", alignItems: "center",
+                    justifyContent: "space-between",
+                    borderBottom: `1px solid ${border}`,
+                    background: b.status === "CRITICAL"
+                      ? "rgba(248,113,113,0.08)"
+                      : b.status === "WARNING"
+                      ? "rgba(251,146,60,0.08)"
+                      : "transparent",
+                    animation: b.status !== "NORMAL" ? "alertPulse 1.2s ease-in-out infinite" : undefined,
+                    borderRadius: 12,
+                    padding: "10px 14px",
+                    marginBottom: 6 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       <div style={{ width: 8, height: 8, borderRadius: "50%",
                         background: STATUS_COLOR[b.status] }} />
