@@ -16,7 +16,7 @@
  *  - Time scrubber slider (t = 0 to 95)
  *  - Voltage Snapshot bar chart at selected timestep
  *  - Bus Status panel (right sidebar)
- *  - Live indicator + Refresh button + Dark mode toggle
+ *  - Live indicator + Dark mode toggle
  */
 
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -77,10 +77,8 @@ export default function GridPulseDashboard() {
   const [smartOnly, setSmartOnly]   = useState(false);       // filter Smart buses only
   const [activeBuses, setActiveBuses] = useState(new Set()); // which buses are visible
   const [timeStep, setTimeStep]     = useState(12);          // slider position (0–23, 12=12:00)
-  const [liveMode, setLiveMode]     = useState(true);
 
   const DATE = "2026-04-15";
-  const refreshInterval = useRef(null);
 
   const getFirstAvailableLoadDate = async () => {
     const loadsRes = await fetch(`${API}/loads/`);
@@ -157,13 +155,7 @@ export default function GridPulseDashboard() {
     fetchData();
   }, []);
 
-  // Live refresh every 30 seconds if liveMode is on
-  useEffect(() => {
-    if (liveMode) {
-      refreshInterval.current = setInterval(fetchData, 30000);
-    }
-    return () => clearInterval(refreshInterval.current);
-  }, [liveMode, fetchData]);
+  // No auto refresh interval to avoid page reload behavior
 
   // Track mobile viewport for responsive layout adjustments
   useEffect(() => {
@@ -378,28 +370,6 @@ export default function GridPulseDashboard() {
           </div>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          {/* Live indicator */}
-          <div className="live-pill" onClick={() => setLiveMode(!liveMode)}
-            style={{ display: "flex", alignItems: "center", gap: 6,
-              padding: "5px 12px", borderRadius: 20,
-              background: liveMode ? "#dcfce7" : "#f1f5f9",
-              border: `1px solid ${liveMode ? "#86efac" : border}` }}>
-            <div style={{ width: 7, height: 7, borderRadius: "50%",
-              background: liveMode ? "#22c55e" : "#94a3b8",
-              animation: liveMode ? "pulse 1.5s infinite" : "none" }} />
-            <span style={{ fontSize: 13, fontWeight: 600,
-              color: liveMode ? "#15803d" : subtext }}>
-              {liveMode ? "Live" : "Paused"}
-            </span>
-          </div>
-          {/* Refresh */}
-          <button onClick={fetchData}
-            style={{ display: "flex", alignItems: "center", gap: 6,
-              padding: "5px 14px", background: "transparent",
-              border: `1px solid ${border}`, borderRadius: 8,
-              cursor: "pointer", color: text, fontSize: 13 }}>
-            ↻ Refresh
-          </button>
           {/* Dark mode */}
           <button onClick={() => setDark(!dark)}
             style={{ width: 34, height: 34, borderRadius: 8,
@@ -428,7 +398,7 @@ export default function GridPulseDashboard() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
             <div style={{ padding: "10px 16px", borderRadius: 999, background: "#dcfce7", color: "#166534", fontWeight: 700, fontSize: 12 }}>
-              {liveMode ? "Live refresh every 30s" : "Live refresh paused"}
+              Live dashboard
             </div>
             <div style={{ padding: "10px 16px", borderRadius: 999, background: "#e0f2fe", color: "#075985", fontWeight: 700, fontSize: 12 }}>
               Snapshot @ {snapshotTime}
@@ -743,6 +713,10 @@ export default function GridPulseDashboard() {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.4; }
         }
+        @keyframes alertPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.0); }
+          50% { box-shadow: 0 0 0 12px rgba(255,255,255,0.08); }
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: ${bg}; }
         input[type=range] { height: 4px; }
@@ -756,13 +730,28 @@ export default function GridPulseDashboard() {
 }
 
 // ─── StatCard Component ───────────────────────────────────────────────────────
-function StatCard({ dark, card, border, text, subtext, icon, label, value, sub, iconColor }) {
+function StatCard({ dark, card, border, text, subtext, icon, label, value, sub, iconColor, alertType }) {
   const cardShadow = dark ? "0 28px 75px rgba(15,23,42,0.20)" : "0 18px 40px rgba(15,23,42,0.08)";
+  const alertStyle = alertType === "critical"
+    ? {
+      borderColor: "#f87171",
+      boxShadow: "0 0 0 10px rgba(248,113,113,0.12)",
+      animation: "alertPulse 1.5s ease-in-out infinite"
+    }
+    : alertType === "warning"
+    ? {
+      borderColor: "#fb923c",
+      boxShadow: "0 0 0 10px rgba(251,146,60,0.12)",
+      animation: "alertPulse 1.5s ease-in-out infinite"
+    }
+    : {};
+
   return (
     <div className="stat-card" style={{ background: card, border: `1px solid ${border}`,
       borderRadius: 16, padding: "18px 20px",
       display: "flex", alignItems: "flex-start", justifyContent: "space-between",
-      boxShadow: cardShadow, transition: "transform 0.25s ease, box-shadow 0.25s ease" }}>
+      boxShadow: cardShadow, transition: "transform 0.25s ease, box-shadow 0.25s ease",
+      ...alertStyle }}>
       <div>
         <div style={{ fontSize: 11, fontWeight: 700, color: subtext,
           letterSpacing: "0.08em", marginBottom: 6 }}>{label}</div>
