@@ -25,6 +25,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ReferenceLine, ResponsiveContainer, Cell
 } from "recharts";
+import { AlertCircle, AlertTriangle, ArrowUpDown, CheckCircle2, Zap } from "lucide-react";
 
 // ─── API Base URL ─────────────────────────────────────────────────────────────
 // In development, use relative /api so Vite proxy works and the browser does not need docker host names.
@@ -413,34 +414,39 @@ export default function GridPulseDashboard() {
           {/* Avg Voltage */}
           <StatCard dark={dark} card={card} border={border} text={text} subtext={subtext}
              label="AVG VOLTAGE"
-            value={currentSummary ? `${currentSummary.avg_voltage} pu` : "—"}
-            sub={`@ ${snapshotTime}`} iconColor="#0ea5e9" />
+            value={currentSummary ? `${currentSummary.avg_voltage} pu` : "NA"}
+            sub={`@ ${snapshotTime}`} iconColor="#0ea5e9"
+            icon={<Zap size={18} />} />
 
           {/* Min/Max */}
           <StatCard dark={dark} card={card} border={border} text={text} subtext={subtext}
              label="MIN / MAX"
-            value={currentSummary ? `${currentSummary.min_voltage} / ${currentSummary.max_voltage}` : "—"}
-            sub="per-unit range" iconColor="#06b6d4" />
+            value={currentSummary ? `${currentSummary.min_voltage} / ${currentSummary.max_voltage}` : "NA"}
+            sub="per-unit range" iconColor="#06b6d4"
+            icon={<ArrowUpDown size={18} />} />
 
           {/* Healthy Buses */}
           <StatCard dark={dark} card={card} border={border} text={text} subtext={subtext}
              label="HEALTHY BUSES"
-            value={currentSummary ? currentSummary.healthy_count : "—"}
-            sub={`of ${currentSummary?.total_buses || 8} total`} iconColor="#22c55e" />
+            value={currentSummary ? currentSummary.healthy_count : "NA"}
+            sub={`of ${currentSummary?.total_buses || 8} total`} iconColor="#22c55e"
+            icon={<CheckCircle2 size={18} />} />
 
           {/* Warnings */}
           <StatCard dark={dark} card={card} border={border} text={text} subtext={subtext}
              label="WARNINGS"
-            value={currentSummary ? currentSummary.warning_count : "—"}
+            value={currentSummary ? currentSummary.warning_count : "NA"}
             sub={`${LIMIT_NORMAL_LOW} – ${LIMIT_NORMAL_HIGH} band`}
             iconColor="#f59e0b"
+            icon={<AlertTriangle size={18} />}
             alertType={warningActive ? "warning" : undefined} />
 
           {/* Critical */}
           <StatCard dark={dark} card={card} border={border} text={text} subtext={subtext}
              label="CRITICAL"
-            value={currentSummary ? currentSummary.critical_count : "—"}
+            value={currentSummary ? currentSummary.critical_count : "NA"}
             sub={`outside ±5%`} iconColor="#ef4444"
+            icon={<AlertCircle size={18} />}
             alertType={criticalActive ? "critical" : undefined} />
         </div>
 
